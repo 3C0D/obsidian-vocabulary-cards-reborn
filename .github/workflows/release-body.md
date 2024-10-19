@@ -1,1 +1,1 @@
-up
+fix transcription if stars before
