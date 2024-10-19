@@ -1,45 +1,56 @@
-import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Notice, type MarkdownPostProcessorContext, Plugin } from "obsidian"
+import { CardList } from "./CardList.ts"
+import { CardStat } from "./CardStat.ts"
+import { i10n, userLang } from "./i10n.ts"
+import { renderCard, renderTableBody } from "./render.ts"
+import { VocabularySettingTab } from "./settingTab.ts"
+import { getSource, handleContextMenu } from "./utils.ts"
+import { DEFAULT_SETTINGS } from "./variables.ts"
+import type { Settings } from "obsidian "
 
-// Remember to rename these classes and interfaces
 
-interface MyPluginSettings {
-	mySetting: string;
-}
+export default class VocabularyView extends Plugin {
+    settings: Settings
+    viewedIds: string[] = []
+    mode: "random" | "next" = 'random'
+    invert = false
+    autoMode = false
+    autoModeTimer: NodeJS.Timeout | null = null
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+    async onload() {
+        await this.loadSettings();
+        this.registerMarkdownCodeBlockProcessor("voca-table", await this.renderTable.bind(this))
+        this.registerMarkdownCodeBlockProcessor("voca-card", await this.parseCodeBlock.bind(this))
+        this.addSettingTab(new VocabularySettingTab(this.app, this));
+    }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+    async loadSettings() {
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    }
 
-	async onload() {
-		await this.loadSettings();
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-	}
+    async saveSettings() {
+        await this.saveData(this.settings);
+    }
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
+    async parseCodeBlock(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
+        await this.loadSettings();
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
+        if (!ctx) {
+            new Notice(i10n.noContext[userLang]);
+            return;
+        }
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+        const contentAfter = await getSource(el, ctx);
+        const cardList = new CardList(this, contentAfter);
+        const cardStat = new CardStat(this, this.app, el, ctx, cardList);
+        await renderCard(this, cardStat, cardList, el, ctx, contentAfter);
+        el.addEventListener("contextmenu", (e) => handleContextMenu(e, this, el, ctx, source, cardStat, cardList, contentAfter));
+    }
 
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-	}
+    async renderTable(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
+        source = await getSource(el, ctx) || '';
+        const cardList = new CardList(this, source);
+        renderTableBody(this, cardList, el, ctx);
+        el.addEventListener("contextmenu", (e) => handleContextMenu(e, this, el, ctx, source));
+    }
 }

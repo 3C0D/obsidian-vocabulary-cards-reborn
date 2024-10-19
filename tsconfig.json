@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "types": [
+      "node",
       "obsidian-typings"
     ],
     "paths": {
@@ -15,6 +16,8 @@
     "moduleResolution": "NodeNext",
     "target": "ES2021",
     "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "noImplicitAny": true,
     "importHelpers": true,
     "isolatedModules": true,

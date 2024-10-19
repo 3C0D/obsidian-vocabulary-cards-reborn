@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin-sass",
+	"name": "vocabulary_cards_reborn",
 	"version": "1.0.0",
-	"description": "Sample Plugin Modif Sass",
+	"description": "vocabulary cards improved",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
