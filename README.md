@@ -1,4 +1,41 @@
-# Obsidian Sample Plugin Modifications
+# Vocabulary cards
+
+Source from [obsidian-vocabulary-cards](https://github.com/meniam/obsidian-vocabulary-cards)
+
+New Version:  
+![alt text](assets/example.png)
+Menus in 5 languages `en`, `fr`, `es`, `ru`, `zh`.
+
+## Totally Revamped
+
+For records, the code block languages are still `voca-card` or `voca-table`
+
+**The new format** is `expression : [transcription] explanation` (previously transcription used <>)
+
+**The code block is fed by the markdown page content below it.**
+
+**Titles will be ignored**. So you can use them to organize and **fold the content under the codeblock**.
+
+If there are multiple code blocks, the content between them will be used to fill each block.
+
+Each codeblock now has an id, automatically generated, to save statistics. Don't copy an existing codeblock keeping the same id or delete it (id:123...).
+
+The `↺` **button** is used to synchronize the codeblock after editing the markdown page below.
+
+The `random` card selection process employs a weighted random system. The number of right and wrong answers is limited to 9. Cards with 9 right answers are rarely displayed while cards with 9 wrong answers are displayed often.  
+Another mode is `next card`  
+  
+The play `▶/⏹` button starts/stops the automatic mode. Cards are then displayed one after another, first showing the expression for a certain time and then the explanation for another time. Both times are configurable in the settings.  
+
+**Context menu**:
+- Clean data of deleted codeblocks.
+- Choose mode: `random` or `next`.
+- Show inverted: invert the expression and its explanation (blured at first). Really usefull to learn in both directions.
+- Switch between codeblock languages: `voca-card` or `voca-table`. To avoid to have to edit the block manually.  
+  
+![demo](assets/Voca_cards_review.gif)  
+   
+[Idea to use it better to learn a language with perplexity AI](<assets/Idea to use it better to learn a language.md>)
 
 ## Development (Add this to your README)
 
