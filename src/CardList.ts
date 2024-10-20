@@ -69,8 +69,6 @@ export class CardList {
         const rest = restParts.join(':').trim();
 
         const { transcription, explanation } = this.parseTranscriptionAndExplanation(rest);
-        console.log("transcription", transcription)
-        console.log("explanation", explanation)
 
         if (explanation !== ''){
             try {
