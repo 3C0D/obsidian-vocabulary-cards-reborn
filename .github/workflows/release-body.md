@@ -1,1 +1,1 @@
-fix transcription if stars before
+console.log removed
