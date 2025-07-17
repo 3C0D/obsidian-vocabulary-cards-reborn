@@ -17,7 +17,7 @@ export class CardStat {
         private cardList: CardList
     ) { }
 
-    async resolveId() {
+    async resolveId(): Promise<string | undefined> {
         // get section info lineStart, lineEnd, text (page content)
         const sectionInfo = this.ctx.getSectionInfo(this.el);
         if (!sectionInfo) return "";
@@ -58,8 +58,8 @@ export class CardStat {
     }
 
     async cleanupSavedStats(): Promise<void> {
-        const stats = this.plugin.settings.stats
-        if (!stats[this.id]) return
+        const stats = this.plugin.settings.stats;
+        if (!stats[this.id]) return;
 
         const currentDerivatives = new Set(this.cardList.cards.map(card => card.derivative));
         const statsToKeep: PageStats = {};

@@ -9,7 +9,7 @@ import { i10n, userLang } from "./i10n.ts";
 
 
 
-export function renderTableRow(tableBody: HTMLElement, word: Card) {
+export function renderTableRow(tableBody: HTMLElement, word: Card): void {
     const trEl = tableBody.createEl('tr');
     const derivative = trEl.createEl('td', { cls: 'voca-table_derivative' });
 
@@ -22,14 +22,14 @@ export function renderTableRow(tableBody: HTMLElement, word: Card) {
     explanation.createEl('span', { 'text': word.explanation });
 }
 
-function renderTranscription(derivative: HTMLElement, transcription: string) {
+function renderTranscription(derivative: HTMLElement, transcription: string): void {
     const transcriptionEl = derivative.createEl('span', { cls: 'voca-table_derivative-transcription' });
     transcriptionEl.createEl('span', { cls: 'voca-table_derivative-transcription-delimiter', text: '/' });
     transcriptionEl.createEl('span', { cls: 'voca-table_derivative-transcription-text', text: transcription });
     transcriptionEl.createEl('span', { cls: 'voca-table_derivative-transcription-delimiter', text: '/' });
 }
 
-export function renderTableBody(plugin: VocabularyView, cardList: CardList, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
+export function renderTableBody(plugin: VocabularyView, cardList: CardList, el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
     while (el.firstChild) {
         el.removeChild(el.firstChild);
     }
@@ -49,7 +49,7 @@ export function renderTableBody(plugin: VocabularyView, cardList: CardList, el: 
 }
 
 
-export async function renderCard(plugin: VocabularyView, cardStat: CardStat, cardList: CardList, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string) {
+export async function renderCard(plugin: VocabularyView, cardStat: CardStat, cardList: CardList, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string): Promise<void> {
     while (el.firstChild) {
         el.removeChild(el.firstChild);
     }
@@ -84,7 +84,7 @@ export async function renderCard(plugin: VocabularyView, cardStat: CardStat, car
     }
 }
 
-export function renderCardStats(cardEl: HTMLElement, cardStat: CardStat, card: Card, cardList: CardList) {
+export function renderCardStats(cardEl: HTMLElement, cardStat: CardStat, card: Card, cardList: CardList): void {
     const statData = cardStat.getStats(card);
     const stat = cardEl.createEl('span', { cls: 'voca-card_stat' });
 
@@ -97,7 +97,7 @@ export function renderCardStats(cardEl: HTMLElement, cardStat: CardStat, card: C
     stat.createEl('span', { cls: 'voca-card_stat-right', text: statData[0].toString() });
 }
 
-export function renderCardContent(plugin: VocabularyView, cardEl: HTMLElement, card: Card) {
+export function renderCardContent(plugin: VocabularyView, cardEl: HTMLElement, card: Card): void {
     // Create the main content (derivative or explanation based on invert)
     cardEl.createEl('span', {
         cls: 'voca-card_derivative',
@@ -142,7 +142,7 @@ export function renderCardContent(plugin: VocabularyView, cardEl: HTMLElement, c
     }
 }
 
-export function renderCardButtons(plugin: VocabularyView, cardEl: HTMLElement, card: Card, cardStat: CardStat, cardList: CardList, el: HTMLElement, ctx: MarkdownPostProcessorContext, src: string) {
+export function renderCardButtons(plugin: VocabularyView, cardEl: HTMLElement, card: Card, cardStat: CardStat, cardList: CardList, el: HTMLElement, ctx: MarkdownPostProcessorContext, src: string): void {
     const btns = cardEl.createEl('div', { cls: 'voca-card_buttons' });
 
     const wrong = btns.createEl('button', { cls: 'voca-card_button-danger', text: i10n.repeat[userLang] });
@@ -156,16 +156,16 @@ export function renderCardButtons(plugin: VocabularyView, cardEl: HTMLElement, c
     });
 }
 
-function oneCard(cardList: CardList) {
+function oneCard(cardList: CardList): boolean {
     const remainingCards = cardList.cards.filter(c => c !== cardList.currentCard);
     if (!remainingCards.length) {
         new Notice("Only one card", 3000);
-        return true
+        return true;
     }
-    return false
+    return false;
 }
 
-async function confirm(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, card: Card, el: HTMLElement, ctx: MarkdownPostProcessorContext, right: boolean, src: string) {
+async function confirm(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, card: Card, el: HTMLElement, ctx: MarkdownPostProcessorContext, right: boolean, src: string): Promise<void> {
     if (oneCard(cardList)) return;
     right ? cardStat.rightAnswer(card) : await cardStat.wrongAnswer(card);
     if (plugin.autoMode && !plugin.settings.disableConfirmationButtons) {
@@ -173,19 +173,19 @@ async function confirm(plugin: VocabularyView, cardList: CardList, cardStat: Car
             clearTimeout(plugin.autoModeTimer);
             plugin.autoModeTimer = null;
             await runAutoMode(plugin, cardList, cardStat, el.parentElement as HTMLElement, ctx, src);
-            return
+            return;
         }
     }
     await renderSingleCard(plugin, cardList, cardStat, el, ctx, src);
 }
 
-export function reloadButton(plugin: VocabularyView, el: HTMLElement, cardList: CardList, ctx: MarkdownPostProcessorContext, type: 'card' | 'table' = 'table', cardStat?: CardStat) {
+export function reloadButton(plugin: VocabularyView, el: HTMLElement, cardList: CardList, ctx: MarkdownPostProcessorContext, type: 'card' | 'table' = 'table', cardStat?: CardStat): void {
     const buttonContainer = el.createEl('div', { cls: 'reload-container' });
     const reload = buttonContainer.createEl('button', { cls: 'reload-container_button-reload', title: i10n.reload[userLang], text: " ↺" });
 
     reload.addEventListener("click", async () => {
         if (!ctx) {
-            return
+            return;
         }
         const contentAfter = await getSource(el, ctx);
         if (!contentAfter) {
@@ -197,29 +197,29 @@ export function reloadButton(plugin: VocabularyView, el: HTMLElement, cardList: 
                 el.querySelector('.mode-div')?.classList.add('hidden');
                 el.querySelector('.invert-div')?.classList.add('hidden');
             }
-            return
+            return;
         }
         if (type === 'card') {
             el.querySelector('.mode-div')?.classList.remove('hidden');
             el.querySelector('.invert-div')?.classList.remove('hidden');
             cardList.updateSource(contentAfter);
-            const parent = el.parentElement
-            if (!parent) return
-            el.detach()
-            await renderCard(plugin, cardStat as CardStat, cardList, parent, ctx, contentAfter)
+            const parent = el.parentElement;
+            if (!parent) return;
+            el.detach();
+            await renderCard(plugin, cardStat as CardStat, cardList, parent, ctx, contentAfter);
         } else {
             cardList.updateSource(contentAfter);
-            renderTableBody(plugin, cardList, el, ctx)
+            renderTableBody(plugin, cardList, el, ctx);
         }
-    })
+    });
 }
 
-export function mode(plugin: VocabularyView, el: HTMLElement) {
+export function mode(plugin: VocabularyView, el: HTMLElement): void {
     const container = el.querySelector('.reload-container') as HTMLElement;
     container.createEl('div', { cls: 'mode-div', text: plugin.mode === "random" ? i10n.random[userLang] : i10n.next[userLang] });
 }
 
-export function invert(plugin: VocabularyView, el: HTMLElement) {
+export function invert(plugin: VocabularyView, el: HTMLElement): void {
     const container = el.querySelector('.reload-container') as HTMLElement;
     container.createEl('div', { cls: 'invert-div', text: plugin.invert ? i10n.invert[userLang] : i10n.normal[userLang] });
 }

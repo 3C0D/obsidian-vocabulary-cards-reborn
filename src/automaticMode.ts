@@ -5,11 +5,11 @@ import type VocabularyView from "./main.ts";
 import { renderSingleCard } from "./utils.ts";
 
 
-export async function toggleAutoMode(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string) {
+export async function toggleAutoMode(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string): Promise<void> {
     plugin.autoMode = !plugin.autoMode;
     const playButton = el.querySelector('.reload-container_play-button') as HTMLButtonElement;
     playButton.textContent = plugin.autoMode ? '⏹' : '▶';
-    const disableConfirmationButtons = plugin.settings.disableConfirmationButtons
+    const disableConfirmationButtons = plugin.settings.disableConfirmationButtons;
 
     if (plugin.autoMode) {
         if (disableConfirmationButtons) disableButtons(el);
@@ -23,7 +23,7 @@ export async function toggleAutoMode(plugin: VocabularyView, cardList: CardList,
     }
 }
 
-export function disableButtons(el: HTMLElement) {
+export function disableButtons(el: HTMLElement): void {
     const buttons = el.querySelectorAll('.voca-card_button-danger, .voca-card_button-success') as NodeListOf<HTMLButtonElement>;
     buttons.forEach(button => {
         button.disabled = true;
@@ -32,7 +32,7 @@ export function disableButtons(el: HTMLElement) {
     });
 }
 
-function enableButtons(el: HTMLElement) {
+function enableButtons(el: HTMLElement): void {
     const buttons = el.querySelectorAll('.voca-card_button-danger, .voca-card_button-success') as NodeListOf<HTMLButtonElement>;
     buttons.forEach(button => {
         button.disabled = false;
@@ -41,13 +41,13 @@ function enableButtons(el: HTMLElement) {
     });
 }
 
-export async function runAutoMode(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string) {
-    async function runCycle() {
+export async function runAutoMode(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string): Promise<void> {
+    async function runCycle(): Promise<void> {
         if (!plugin.autoMode) return;
 
         const voca_card = el.querySelector('.voca-card') as HTMLElement;
         await renderSingleCard(plugin, cardList, cardStat, voca_card, ctx, source);
-        const disableConfirmationButtons = plugin.settings.disableConfirmationButtons
+        const disableConfirmationButtons = plugin.settings.disableConfirmationButtons;
         if (disableConfirmationButtons) disableButtons(el);
 
         plugin.autoModeTimer = setTimeout(async () => {

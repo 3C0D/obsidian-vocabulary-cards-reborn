@@ -10,9 +10,9 @@ import { renderCard, renderCardStats, renderCardContent, renderCardButtons } fro
 /**
  * returns the content of the markdown page untill next code block if exists
  */
-export async function getSource(el: HTMLElement, ctx: MarkdownPostProcessorContext) {
+export async function getSource(el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<string> {
     const sectionInfo = ctx.getSectionInfo(el);
-    if (!sectionInfo) return ""
+    if (!sectionInfo) return "";
     // page content
     const lines = sectionInfo.text.split('\n').filter(line => !/^#{1,6}\s+/.test(line));
     return getContentAfterCodeBlock(lines, sectionInfo.lineEnd);
@@ -34,7 +34,7 @@ function getContentAfterCodeBlock(lines: string[], codeBlockEndLine: number): st
     return contentAfter.join('\n').trim();
 }
 
-export async function replaceLanguage(plugin: VocabularyView, ctx: MarkdownPostProcessorContext, el: HTMLElement) {
+export async function replaceLanguage(plugin: VocabularyView, ctx: MarkdownPostProcessorContext, el: HTMLElement): Promise<string | undefined> {
     const sectionInfo = ctx.getSectionInfo(el);
     if (!sectionInfo) return "";
     const file = plugin.app.vault.getFileByPath(ctx.sourcePath);
@@ -89,19 +89,19 @@ export function getRandomCardWithWeight(cards: Card[], cardStat: CardStat): Card
     return weightedCards[0].card;
 }
 
-export function createEmpty(el: HTMLElement, secondChild?: HTMLElement) {
+export function createEmpty(el: HTMLElement, secondChild?: HTMLElement): void {
     const emptyElement = el.createEl('div', { cls: 'voca-empty', text: i10n.empty[userLang] });
     if (secondChild) {
-        el.insertBefore(emptyElement, secondChild)
+        el.insertBefore(emptyElement, secondChild);
     }
 }
 
 // string from date in ms
-export function createIdfromDate() {
-    return Date.now().toString()
+export function createIdfromDate(): string {
+    return Date.now().toString();
 }
 
-export async function cleanStats() {
+export async function cleanStats(): Promise<void> {
     const markdownFiles = this.app.vault.getMarkdownFiles();
     const codeBlockRegex = /^```(voca-card|voca-table)\s*(.*?)\s*$/gm;
     const usedIds = new Set();
@@ -138,7 +138,7 @@ export async function cleanStats() {
     await this.saveSettings();
 }
 
-export function handleContextMenu(event: MouseEvent, plugin: VocabularyView, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string, cardStat?: CardStat, cardList?: CardList, contentAfter?: string) {
+export function handleContextMenu(event: MouseEvent, plugin: VocabularyView, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string, cardStat?: CardStat, cardList?: CardList, contentAfter?: string): void {
     event.preventDefault();
     const isVocaCard = el.classList.contains("block-language-voca-card");
     const menu = new Menu();
@@ -199,7 +199,7 @@ export function remainingCards(plugin: VocabularyView, cardList: CardList, cardS
     return remainingCards.length ? getNextCard(plugin, remainingCards, cardStat, cardList) : undefined;
 }
 
-export async function renderSingleCard(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string) {
+export async function renderSingleCard(plugin: VocabularyView, cardList: CardList, cardStat: CardStat, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string): Promise<void> {
     if (cardList.cards.length) {
         await cardStat.resolveId();
     }

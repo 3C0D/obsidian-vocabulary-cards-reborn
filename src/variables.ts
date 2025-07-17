@@ -6,4 +6,4 @@ export const DEFAULT_SETTINGS: Settings = {
     showTime: 3,
     explainTime: 3,
     disableConfirmationButtons: true
-}
+};

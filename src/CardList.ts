@@ -21,18 +21,18 @@ export class CardList {
         this.cards.push(card);
     }
 
-    [Symbol.iterator] = () => {
+    [Symbol.iterator] = (): Iterator<Card> => {
         let index = 0;
         return {
-            next: () => {
+            next: (): IteratorResult<Card> => {
                 if (index < this.length) {
                     return { value: this.cards[index++], done: false };
                 } else {
-                    return { done: true };
+                    return { value: undefined, done: true };
                 }
             }
         };
-    }
+    };
 
     nextCard(): Card | undefined {
         if (this.cards.length === 0) return undefined;
@@ -70,7 +70,7 @@ export class CardList {
 
         const { transcription, explanation } = this.parseTranscriptionAndExplanation(rest);
 
-        if (explanation !== ''){
+        if (explanation !== '') {
             try {
                 // delete "**" around
                 return new Card(trimmedWord, transcription, explanation.replace(/^\*+|\*+$/g, ''));

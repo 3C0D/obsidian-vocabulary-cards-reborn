@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "types": [
-      "node",
       "obsidian-typings"
     ],
     "paths": {
@@ -16,15 +15,16 @@
     "moduleResolution": "NodeNext",
     "target": "ES2021",
     "allowJs": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
     "noImplicitAny": true,
     "importHelpers": true,
     "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
+    "resolveJsonModule": true,
     "lib": [
       "DOM",
       "ES2021"
@@ -33,5 +33,9 @@
   "include": [
     "./src/**/*.ts",
     "./scripts/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "eslint.config.ts"
   ]
 }

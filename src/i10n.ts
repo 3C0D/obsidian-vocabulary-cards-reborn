@@ -145,4 +145,4 @@ export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, c
         "es": "Deshabilitar si quieres que los botones de confirmación permanezcan activos en el modo automático",
         "fr": "Désactiver si vous souhaitez que les boutons de confirmation restent actifs, dans le mode automatique"
     }
-}
+};
