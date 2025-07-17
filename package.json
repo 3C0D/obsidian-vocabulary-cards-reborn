@@ -1,6 +1,6 @@
 {
 	"name": "vocabulary_cards_reborn",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "vocabulary cards improved",
 	"main": "main.js",
 	"type": "module",
