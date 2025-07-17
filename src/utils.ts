@@ -139,7 +139,6 @@ export async function cleanStats(): Promise<void> {
 }
 
 export function handleContextMenu(event: MouseEvent, plugin: VocabularyView, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string, cardStat?: CardStat, cardList?: CardList, contentAfter?: string): void {
-    event.preventDefault();
     const isVocaCard = el.classList.contains("block-language-voca-card");
     const menu = new Menu();
 
