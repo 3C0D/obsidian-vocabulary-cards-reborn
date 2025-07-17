@@ -190,7 +190,11 @@ export function handleContextMenu(event: MouseEvent, plugin: VocabularyView, el:
         );
     }
 
-    menu.showAtMouseEvent(event);
+    try {
+        menu.showAtMouseEvent(event);        
+    }   catch (error) {
+        console.error("Error showing context menu:", error);
+    }
 }
 
 export function remainingCards(plugin: VocabularyView, cardList: CardList, cardStat: CardStat): Card | undefined {
