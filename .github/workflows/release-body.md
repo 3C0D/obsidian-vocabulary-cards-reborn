@@ -1,1 +1,1 @@
-prevent default removed to resolve context menu not appearing under flatPack
+prevent default removed and try catch to see if still error under Linux FlatPack
