@@ -1,1 +1,1 @@
-updated config
+prevent default removed to resolve context menu not appearing under flatPack
