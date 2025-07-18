@@ -1,6 +1,6 @@
 {
 	"name": "vocabulary_cards_reborn",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "vocabulary cards improved",
 	"main": "main.js",
 	"type": "module",
@@ -11,7 +11,6 @@
 		"real": "tsx scripts/esbuild.config.ts production real",
 		"acp": "tsx scripts/acp.ts",
 		"bacp": "tsx scripts/acp.ts -b",
-		"version": "tsx scripts/update-version.mts",
 		"release": "tsx scripts/release.ts",
 		"update-version": "tsx scripts/update-version.ts",
 		"v": "tsx scripts/update-version.ts",
