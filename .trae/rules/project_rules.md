@@ -1,0 +1,1 @@
+Ne modifie pas le dossier obsidian-vocabulary-cards-reborn-1.0.2 C'est une version antérieure qui nous servira de référence.

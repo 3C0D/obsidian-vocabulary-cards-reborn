@@ -45,6 +45,25 @@ export default class VocabularyView extends Plugin {
         const cardStat = new CardStat(this, this.app, el, ctx, cardList);
         await renderCard(this, cardStat, cardList, el, ctx, contentAfter);
         el.addEventListener("contextmenu", (e) => handleContextMenu(e, this, el, ctx, source, cardStat, cardList, contentAfter));
+
+        // Add keyboard shortcut for context menu (Shift+F10) - useful for Linux users
+        el.addEventListener('keydown', (event) => {
+            if (event.shiftKey && event.key === 'F10') {
+                event.preventDefault();
+                // Create a synthetic mouse event at the center of the element
+                const rect = el.getBoundingClientRect();
+                const syntheticEvent = new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: rect.left + rect.width / 2,
+                    clientY: rect.top + rect.height / 2
+                });
+                handleContextMenu(syntheticEvent, this, el, ctx, source, cardStat, cardList, contentAfter);
+            }
+        });
+
+        // Make element focusable for keyboard navigation
+        el.setAttribute('tabindex', '0');
     }
 
     async renderTable(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<void> {
@@ -52,5 +71,24 @@ export default class VocabularyView extends Plugin {
         const cardList = new CardList(this, source);
         renderTableBody(this, cardList, el, ctx);
         el.addEventListener("contextmenu", (e) => handleContextMenu(e, this, el, ctx, source));
+
+        // Add keyboard shortcut for context menu (Shift+F10) - useful for Linux users
+        el.addEventListener('keydown', (event) => {
+            if (event.shiftKey && event.key === 'F10') {
+                event.preventDefault();
+                // Create a synthetic mouse event at the center of the element
+                const rect = el.getBoundingClientRect();
+                const syntheticEvent = new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: rect.left + rect.width / 2,
+                    clientY: rect.top + rect.height / 2
+                });
+                handleContextMenu(syntheticEvent, this, el, ctx, source);
+            }
+        });
+
+        // Make element focusable for keyboard navigation
+        el.setAttribute('tabindex', '0');
     }
 }

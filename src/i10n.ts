@@ -5,7 +5,7 @@ interface i10n {
 export const userLang = navigator.language || 'en';
 // export const userLang = 'en';
 
-export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, cards: i10n, reload: i10n, empty: i10n, noContext: i10n, nothingToClean: i10n, statsCleaned: i10n, random: i10n, next: i10n, clean: i10n, invert: i10n, normal: i10n, tableSwitch: i10n, cardSwitch: i10n, derivateTime: i10n, explanationTime: i10n, disableConfirmationButtons: i10n } = {
+export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, cards: i10n, reload: i10n, empty: i10n, noContext: i10n, nothingToClean: i10n, statsCleaned: i10n, random: i10n, next: i10n, clean: i10n, invert: i10n, normal: i10n, tableSwitch: i10n, cardSwitch: i10n, derivateTime: i10n, explanationTime: i10n, disableConfirmationButtons: i10n, contextMenuButton: i10n, contextMenuButtonDesc: i10n, contextMenuButtonDescLinux: i10n, contextMenuRefreshNote: i10n } = {
     iKnow: {
         "en": "I know",
         "ru": "Знаю",
@@ -144,5 +144,33 @@ export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, c
         "ru": "Отключить, если вы хотите, чтобы кнопки подтверждения остались включёнными в режиме автоматической",
         "es": "Deshabilitar si quieres que los botones de confirmación permanezcan activos en el modo automático",
         "fr": "Désactiver si vous souhaitez que les boutons de confirmation restent actifs, dans le mode automatique"
+    },
+    contextMenuButton: {
+        "en": "Show context menu button",
+        "ru": "Показать кнопку контекстного меню",
+        "es": "Mostrar botón de menú contextual",
+        "fr": "Afficher le bouton de menu contextuel",
+        "zh": "显示上下文菜单按钮"
+    },
+    contextMenuButtonDesc: {
+        "en": "Display a button (☰) to show the context menu. Alternative to right-clicking on vocabulary blocks. After changing this setting, click the ↺ button to refresh open vocabulary blocks.",
+        "ru": "Отображать кнопку (☰) для показа контекстного меню. Альтернатива правому клику по блокам словаря. После изменения этой настройки нажмите кнопку ↺ для обновления открытых блоков словаря.",
+        "es": "Mostrar un botón (☰) para mostrar el menú contextual. Alternativa al clic derecho en bloques de vocabulario. Después de cambiar esta configuración, haga clic en el botón ↺ para actualizar los bloques de vocabulario abiertos.",
+        "fr": "Afficher un bouton (☰) pour montrer le menu contextuel. Alternative au clic droit sur les blocs de vocabulaire. Après avoir modifié ce paramètre, cliquez sur le bouton ↺ pour actualiser les blocs de vocabulaire ouverts.",
+        "zh": "显示按钮(☰)以显示上下文菜单。右键单击词汇块的替代方法。更改此设置后，单击↺按钮刷新打开的词汇块。"
+    },
+    contextMenuButtonDescLinux: {
+        "en": "Display a button (☰) to show the context menu. Recommended on Linux due to potential right-click issues, especially with Flatpak installations.",
+        "ru": "Отображать кнопку (☰) для показа контекстного меню. Рекомендуется на Linux из-за возможных проблем с правым кликом, особенно с установками Flatpak.",
+        "es": "Mostrar un botón (☰) para mostrar el menú contextual. Recomendado en Linux debido a posibles problemas con el clic derecho, especialmente con instalaciones Flatpak.",
+        "fr": "Afficher un bouton (☰) pour montrer le menu contextuel. Recommandé sur Linux en raison de problèmes potentiels avec le clic droit, en particulier avec les installations Flatpak.",
+        "zh": "显示按钮(☰)以显示上下文菜单。由于潜在的右键单击问题，特别是Flatpak安装，建议在Linux上使用。"
+    },
+    contextMenuRefreshNote: {
+        "en": "💡 Linux users: If right-click context menu doesn't work, enable the button above or try the keyboard shortcut Shift+F10.",
+        "ru": "💡 Пользователи Linux: Если контекстное меню правого клика не работает, включите кнопку выше или попробуйте сочетание клавиш Shift+F10.",
+        "es": "💡 Usuarios de Linux: Si el menú contextual del clic derecho no funciona, habilite el botón de arriba o pruebe el atajo de teclado Shift+F10.",
+        "fr": "💡 Utilisateurs Linux : Si le menu contextuel du clic droit ne fonctionne pas, activez le bouton ci-dessus ou essayez le raccourci clavier Shift+F10.",
+        "zh": "💡 Linux用户：如果右键上下文菜单不起作用，请启用上面的按钮或尝试键盘快捷键Shift+F10。"
     }
 };

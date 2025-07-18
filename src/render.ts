@@ -2,7 +2,7 @@ import { type MarkdownPostProcessorContext, Notice } from 'obsidian';
 import { Card } from "./Card.ts";
 import { CardList } from './CardList.ts';
 import { CardStat } from './CardStat.ts';
-import { createEmpty, getSource, renderSingleCard } from './utils.ts';
+import { createEmpty, getSource, renderSingleCard, handleContextMenu } from './utils.ts';
 import VocabularyView from './main.ts';
 import { toggleAutoMode, disableButtons, runAutoMode } from './automaticMode.ts';
 import { i10n, userLang } from "./i10n.ts";
@@ -78,6 +78,18 @@ export async function renderCard(plugin: VocabularyView, cardStat: CardStat, car
         attr: { title: plugin.autoMode ? 'Stop' : 'Start Auto Mode' }
     });
     playButton.addEventListener('click', async () => await toggleAutoMode(plugin, cardList, cardStat, container, ctx, source));
+
+    // Add context menu button if setting is enabled
+    if (plugin.settings.showContextMenuButton) {
+        const contextMenuButton = buttonContainer.createEl('button', {
+            cls: 'reload-container_context-menu-button',
+            text: '☰',
+            attr: { title: 'Show context menu' }
+        });
+        contextMenuButton.addEventListener('click', (e) => {
+            handleContextMenu(e as MouseEvent, plugin, el, ctx, source, cardStat, cardList, source);
+        });
+    }
 
     if (plugin.autoMode) {
         disableButtons(cardEl);
@@ -182,6 +194,18 @@ async function confirm(plugin: VocabularyView, cardList: CardList, cardStat: Car
 export function reloadButton(plugin: VocabularyView, el: HTMLElement, cardList: CardList, ctx: MarkdownPostProcessorContext, type: 'card' | 'table' = 'table', cardStat?: CardStat): void {
     const buttonContainer = el.createEl('div', { cls: 'reload-container' });
     const reload = buttonContainer.createEl('button', { cls: 'reload-container_button-reload', title: i10n.reload[userLang], text: " ↺" });
+
+    // Add context menu button for tables if setting is enabled
+    if (plugin.settings.showContextMenuButton && type === 'table') {
+        const contextMenuButton = buttonContainer.createEl('button', {
+            cls: 'reload-container_context-menu-button',
+            text: '☰',
+            attr: { title: 'Show context menu' }
+        });
+        contextMenuButton.addEventListener('click', (e) => {
+            handleContextMenu(e as MouseEvent, plugin, el, ctx, '');
+        });
+    }
 
     reload.addEventListener("click", async () => {
         if (!ctx) {

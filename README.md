@@ -22,16 +22,27 @@ Each codeblock now has an id, automatically generated, to save statistics. Don't
 
 The `↺` **button** is used to synchronize the codeblock after editing the markdown page below.
 
-The `random` card selection process employs a weighted random system. The number of right and wrong answers is limited to 9. Cards with 9 right answers are rarely displayed while cards with 9 wrong answers are displayed often.  
-Another mode is `next card`  
+Two modes are available for card selection:
+- `random`: employs a weighted random system. The number of right and wrong answers is limited to 9. Cards with 9 right answers are rarely displayed while cards with 9 wrong answers are displayed often.
+- `next card`: displays cards in sequential order.
+You can switch between modes using either the context menu or a dedicated button (if enabled in settings).  
   
 The play `▶/⏹` button starts/stops the automatic mode. Cards are then displayed one after another, first showing the expression for a certain time and then the explanation for another time. Both times are configurable in the settings.  
 
 **Context menu**:
 - Clean data of deleted codeblocks.
-- Choose mode: `random` or `next`.
+- Choose mode: `random` or `next`. You can also add a button in the settings to switch between modes.
 - Show inverted: invert the expression and its explanation (blured at first). Really usefull to learn in both directions.
-- Switch between codeblock languages: `voca-card` or `voca-table`. To avoid to have to edit the block manually.  
+- Switch between codeblock languages: `voca-card` or `voca-table`. To avoid to have to edit the block manually.
+
+### Alternative access methods
+
+- **Context menu button**: Enable the optional button (☰) in settings for visual access
+- **Keyboard shortcut**: Press `Shift+F10` while the vocabulary block is focused
+
+### Linux users
+
+If you experience issues with right-click context menus (especially with Flatpak installations), the plugin automatically enables the context menu button by default on Linux systems. You can also use the `Shift+F10` keyboard shortcut as an alternative.  
   
 ![demo](assets/Voca_cards_review.gif)  
    

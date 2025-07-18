@@ -19,5 +19,6 @@ declare module "obsidian " {
         showTime: number;
         explainTime: number;
         disableConfirmationButtons: boolean;
+        showContextMenuButton: boolean;
     }
 }
