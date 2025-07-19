@@ -1,4 +1,4 @@
-import { type MarkdownPostProcessorContext, Notice, Menu } from "obsidian";
+import { type MarkdownPostProcessorContext, Notice, Menu, DropdownComponent } from "obsidian";
 import type { Card } from "./Card.ts";
 import type { CardList } from "./CardList.ts";
 import type { CardStat } from "./CardStat.ts";
@@ -212,10 +212,76 @@ export function handleContextMenu(event: MouseEvent, plugin: VocabularyView, el:
             } catch (finalError) {
                 console.error("All context menu methods failed:", finalError);
                 // Last resort: show a notice with available actions
-                new Notice("Context menu unavailable on this system. Try using keyboard shortcuts or settings panel.");
+                new Notice("Context menu unavailable on this system. Enable 'Use dropdown menu' in settings as an alternative.");
             }
         }
     }
+}
+
+export function showDropdownActions(plugin: VocabularyView, el: HTMLElement, ctx: MarkdownPostProcessorContext, source: string, cardStat?: CardStat, cardList?: CardList, contentAfter?: string): void {
+    const isVocaCard = el.classList.contains("block-language-voca-card");
+
+    // Create a temporary dropdown container
+    const dropdownContainer = el.createEl('div', {
+        cls: 'temp-dropdown-container',
+        attr: { style: 'position: absolute; top: 0; left: 0; z-index: 1000;' }
+    });
+
+    const dropdown = new DropdownComponent(dropdownContainer);
+
+    // Add options
+    dropdown.addOption('clean', `🗑️ ${i10n.clean[userLang]}`);
+    dropdown.addOption('switch', `↔️ ${isVocaCard ? i10n.tableSwitch[userLang] : i10n.cardSwitch[userLang]}`);
+
+    if (cardStat && cardList && contentAfter) {
+        dropdown.addOption('mode', `🔀 ${plugin.mode === "random" ? i10n.next[userLang] : i10n.random[userLang]}`);
+        dropdown.addOption('invert', `🔄 ${plugin.invert ? i10n.normal[userLang] : i10n.invert[userLang]}`);
+    }
+
+    dropdown.onChange(async (value) => {
+        switch (value) {
+            case 'clean':
+                await cleanStats.bind(plugin)();
+                break;
+            case 'switch':
+                await replaceLanguage(plugin, ctx, el);
+                el.detach();
+                if (!isVocaCard) {
+                    await plugin.parseCodeBlock(source, el, ctx);
+                } else {
+                    await plugin.renderTable(source, el, ctx);
+                }
+                break;
+            case 'mode':
+                if (cardStat && cardList) {
+                    plugin.mode = plugin.mode === "random" ? "next" : "random";
+                    await plugin.saveSettings();
+                    (el.querySelector(".mode-div") as HTMLSpanElement).textContent = plugin.mode === "random" ? i10n.random[userLang] : i10n.next[userLang];
+                }
+                break;
+            case 'invert':
+                if (cardStat && cardList && contentAfter) {
+                    plugin.invert = !plugin.invert;
+                    await plugin.saveSettings();
+                    (el.querySelector(".invert-div") as HTMLSpanElement).textContent = plugin.invert ? i10n.invert[userLang] : i10n.normal[userLang];
+                    await renderCard(plugin, cardStat, cardList, el, ctx, contentAfter);
+                }
+                break;
+        }
+        dropdownContainer.remove();
+    });
+
+    // Position the dropdown near the click
+    const rect = el.getBoundingClientRect();
+    dropdownContainer.style.left = `${rect.left}px`;
+    dropdownContainer.style.top = `${rect.bottom}px`;
+
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (dropdownContainer.parentNode) {
+            dropdownContainer.remove();
+        }
+    }, 10000);
 }
 
 export function remainingCards(plugin: VocabularyView, cardList: CardList, cardStat: CardStat): Card | undefined {

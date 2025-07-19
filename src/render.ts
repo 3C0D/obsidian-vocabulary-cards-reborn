@@ -1,8 +1,8 @@
-import { type MarkdownPostProcessorContext, Notice } from 'obsidian';
+import { type MarkdownPostProcessorContext, Notice, DropdownComponent } from 'obsidian';
 import { Card } from "./Card.ts";
 import { CardList } from './CardList.ts';
 import { CardStat } from './CardStat.ts';
-import { createEmpty, getSource, renderSingleCard, handleContextMenu } from './utils.ts';
+import { createEmpty, getSource, renderSingleCard, handleContextMenu, cleanStats, replaceLanguage } from './utils.ts';
 import VocabularyView from './main.ts';
 import { toggleAutoMode, disableButtons, runAutoMode } from './automaticMode.ts';
 import { i10n, userLang } from "./i10n.ts";
@@ -79,78 +79,57 @@ export async function renderCard(plugin: VocabularyView, cardStat: CardStat, car
     });
     playButton.addEventListener('click', async () => await toggleAutoMode(plugin, cardList, cardStat, container, ctx, source));
 
-    // Add context menu button if setting is enabled
+    // Add context menu button or dropdown if setting is enabled
     if (plugin.settings.showContextMenuButton) {
         if (plugin.settings.useDropdownMenu) {
             // Create dropdown menu
             const dropdownContainer = buttonContainer.createEl('div', {
-                cls: 'reload-container_dropdown-container'
-            });
-            const dropdownButton = dropdownContainer.createEl('button', {
-                cls: 'reload-container_dropdown-button',
-                text: '☰',
-                attr: { title: 'Show menu' }
-            });
-            const dropdownMenu = dropdownContainer.createEl('div', {
-                cls: 'reload-container_dropdown-menu'
+                cls: 'reload-container_dropdown-wrapper'
             });
 
-            // Add menu items
-            const cleanItem = dropdownMenu.createEl('div', {
-                cls: 'reload-container_dropdown-item',
-                text: '🗑️ ' + (plugin.settings.stats && Object.keys(plugin.settings.stats).length > 0 ? 'Clean old stats' : 'Nothing to clean')
-            });
-            cleanItem.addEventListener('click', async () => {
-                // Clean stats logic here
-                dropdownMenu.style.display = 'none';
-            });
-
-            const switchItem = dropdownMenu.createEl('div', {
-                cls: 'reload-container_dropdown-item',
-                text: '↔️ Switch to table'
-            });
-            switchItem.addEventListener('click', async () => {
-                // Switch logic here
-                dropdownMenu.style.display = 'none';
-            });
+            const dropdown = new DropdownComponent(dropdownContainer);
+            dropdown.addOption('', 'Actions...');
+            dropdown.addOption('clean', `🗑️ ${i10n.clean[userLang]}`);
+            dropdown.addOption('switch', `↔️ ${i10n.tableSwitch[userLang]}`);
 
             if (cardStat && cardList) {
-                const modeItem = dropdownMenu.createEl('div', {
-                    cls: 'reload-container_dropdown-item',
-                    text: '🔀 Mode: ' + (plugin.mode === "random" ? "Next" : "Random")
-                });
-                modeItem.addEventListener('click', async () => {
-                    plugin.mode = plugin.mode === "random" ? "next" : "random";
-                    await plugin.saveSettings();
-                    (el.querySelector(".mode-div") as HTMLSpanElement).textContent = plugin.mode === "random" ? "Random" : "Next";
-                    dropdownMenu.style.display = 'none';
-                });
-
-                const invertItem = dropdownMenu.createEl('div', {
-                    cls: 'reload-container_dropdown-item',
-                    text: '🔄 ' + (plugin.invert ? "Normal" : "Invert")
-                });
-                invertItem.addEventListener('click', async () => {
-                    plugin.invert = !plugin.invert;
-                    await plugin.saveSettings();
-                    (el.querySelector(".invert-div") as HTMLSpanElement).textContent = plugin.invert ? "Invert" : "Normal";
-                    await renderCard(plugin, cardStat, cardList, el, ctx, source);
-                    dropdownMenu.style.display = 'none';
-                });
+                dropdown.addOption('mode', `🔀 ${plugin.mode === "random" ? i10n.next[userLang] : i10n.random[userLang]}`);
+                dropdown.addOption('invert', `🔄 ${plugin.invert ? i10n.normal[userLang] : i10n.invert[userLang]}`);
             }
 
-            // Toggle dropdown
-            dropdownButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-            });
+            dropdown.setValue('');
+            dropdown.onChange(async (value) => {
+                if (value === '') return;
 
-            // Close dropdown when clicking outside
-            document.addEventListener('click', () => {
-                dropdownMenu.style.display = 'none';
+                switch (value) {
+                    case 'clean':
+                        await cleanStats.bind(plugin)();
+                        break;
+                    case 'switch':
+                        await replaceLanguage(plugin, ctx, el);
+                        el.detach();
+                        await plugin.parseCodeBlock(source, el, ctx);
+                        break;
+                    case 'mode':
+                        if (cardStat && cardList) {
+                            plugin.mode = plugin.mode === "random" ? "next" : "random";
+                            await plugin.saveSettings();
+                            (el.querySelector(".mode-div") as HTMLSpanElement).textContent = plugin.mode === "random" ? i10n.random[userLang] : i10n.next[userLang];
+                        }
+                        break;
+                    case 'invert':
+                        if (cardStat && cardList) {
+                            plugin.invert = !plugin.invert;
+                            await plugin.saveSettings();
+                            (el.querySelector(".invert-div") as HTMLSpanElement).textContent = plugin.invert ? i10n.invert[userLang] : i10n.normal[userLang];
+                            await renderCard(plugin, cardStat, cardList, el, ctx, source);
+                        }
+                        break;
+                }
+                dropdown.setValue(''); // Reset selection
             });
         } else {
-            // Use context menu
+            // Use context menu button
             const contextMenuButton = buttonContainer.createEl('button', {
                 cls: 'reload-container_context-menu-button',
                 text: '☰',
@@ -266,53 +245,37 @@ export function reloadButton(plugin: VocabularyView, el: HTMLElement, cardList: 
     const buttonContainer = el.createEl('div', { cls: 'reload-container' });
     const reload = buttonContainer.createEl('button', { cls: 'reload-container_button-reload', title: i10n.reload[userLang], text: " ↺" });
 
-    // Add context menu button for tables if setting is enabled
+    // Add context menu button or dropdown for tables if setting is enabled
     if (plugin.settings.showContextMenuButton && type === 'table') {
         if (plugin.settings.useDropdownMenu) {
             // Create dropdown menu for tables
             const dropdownContainer = buttonContainer.createEl('div', {
-                cls: 'reload-container_dropdown-container'
-            });
-            const dropdownButton = dropdownContainer.createEl('button', {
-                cls: 'reload-container_dropdown-button',
-                text: '☰',
-                attr: { title: 'Show menu' }
-            });
-            const dropdownMenu = dropdownContainer.createEl('div', {
-                cls: 'reload-container_dropdown-menu'
+                cls: 'reload-container_dropdown-wrapper'
             });
 
-            // Add menu items for tables
-            const cleanItem = dropdownMenu.createEl('div', {
-                cls: 'reload-container_dropdown-item',
-                text: '🗑️ Clean old stats'
-            });
-            cleanItem.addEventListener('click', async () => {
-                // Clean stats logic here
-                dropdownMenu.style.display = 'none';
-            });
+            const dropdown = new DropdownComponent(dropdownContainer);
+            dropdown.addOption('', 'Actions...');
+            dropdown.addOption('clean', `🗑️ ${i10n.clean[userLang]}`);
+            dropdown.addOption('switch', `↔️ ${i10n.cardSwitch[userLang]}`);
 
-            const switchItem = dropdownMenu.createEl('div', {
-                cls: 'reload-container_dropdown-item',
-                text: '↔️ Switch to cards'
-            });
-            switchItem.addEventListener('click', async () => {
-                // Switch logic here
-                dropdownMenu.style.display = 'none';
-            });
+            dropdown.setValue('');
+            dropdown.onChange(async (value) => {
+                if (value === '') return;
 
-            // Toggle dropdown
-            dropdownButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', () => {
-                dropdownMenu.style.display = 'none';
+                switch (value) {
+                    case 'clean':
+                        await cleanStats.bind(plugin)();
+                        break;
+                    case 'switch':
+                        await replaceLanguage(plugin, ctx, el);
+                        el.detach();
+                        await plugin.renderTable('', el, ctx);
+                        break;
+                }
+                dropdown.setValue(''); // Reset selection
             });
         } else {
-            // Use context menu
+            // Use context menu button
             const contextMenuButton = buttonContainer.createEl('button', {
                 cls: 'reload-container_context-menu-button',
                 text: '☰',
