@@ -5,7 +5,7 @@ interface i10n {
 export const userLang = navigator.language || 'en';
 // export const userLang = 'en';
 
-export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, cards: i10n, reload: i10n, empty: i10n, noContext: i10n, nothingToClean: i10n, statsCleaned: i10n, random: i10n, next: i10n, clean: i10n, invert: i10n, normal: i10n, tableSwitch: i10n, cardSwitch: i10n, derivateTime: i10n, explanationTime: i10n, disableConfirmationButtons: i10n, contextMenuButton: i10n, contextMenuButtonDesc: i10n } = {
+export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, cards: i10n, reload: i10n, empty: i10n, noContext: i10n, nothingToClean: i10n, statsCleaned: i10n, random: i10n, next: i10n, clean: i10n, invert: i10n, normal: i10n, tableSwitch: i10n, cardSwitch: i10n, derivateTime: i10n, explanationTime: i10n, disableConfirmationButtons: i10n, contextMenuButton: i10n, contextMenuButtonDesc: i10n, useDropdownMenu: i10n, useDropdownMenuDesc: i10n } = {
     iKnow: {
         "en": "I know",
         "ru": "Знаю",
@@ -153,10 +153,24 @@ export const i10n: { iKnow: i10n, repeat: i10n, total: i10n, parseError: i10n, c
         "zh": "显示上下文菜单按钮"
     },
     contextMenuButtonDesc: {
-        "en": "Display a button (☰) to show the context menu. Alternative to right-clicking on vocabulary blocks. After changing this setting, click the ↺ button to refresh open vocabulary blocks.",
-        "ru": "Отображать кнопку (☰) для показа контекстного меню. Альтернатива правому клику по блокам словаря. После изменения этой настройки нажмите кнопку ↺ для обновления открытых блоков словаря.",
-        "es": "Mostrar un botón (☰) para mostrar el menú contextual. Alternativa al clic derecho en bloques de vocabulario. Después de cambiar esta configuración, haga clic en el botón ↺ para actualizar los bloques de vocabulario abiertos.",
-        "fr": "Afficher un bouton (☰) pour montrer le menu contextuel. Alternative au clic droit sur les blocs de vocabulaire. Après avoir modifié ce paramètre, cliquez sur le bouton ↺ pour actualiser les blocs de vocabulaire ouverts.",
-        "zh": "显示按钮(☰)以显示上下文菜单。右键单击词汇块的替代方法。更改此设置后，单击↺按钮刷新打开的词汇块。"
+        "en": "Display a button (☰) to show the context menu. Alternative to right-clicking on vocabulary blocks. Click the ↺ button to refresh vocabulary blocks after changing this setting.",
+        "ru": "Отображать кнопку (☰) для показа контекстного меню. Альтернатива правому клику по блокам словаря. Нажмите кнопку ↺ для обновления блоков словаря после изменения этой настройки.",
+        "es": "Mostrar un botón (☰) para mostrar el menú contextual. Alternativa al clic derecho en bloques de vocabulario. Haga clic en el botón ↺ para actualizar los bloques de vocabulario después de cambiar esta configuración.",
+        "fr": "Afficher un bouton (☰) pour montrer le menu contextuel. Alternative au clic droit sur les blocs de vocabulaire. Cliquez sur le bouton ↺ pour actualiser les blocs de vocabulaire après avoir modifié ce paramètre.",
+        "zh": "显示按钮(☰)以显示上下文菜单。右键单击词汇块的替代方法。更改此设置后，单击↺按钮刷新词汇块。"
+    },
+    useDropdownMenu: {
+        "en": "Use dropdown menu instead of context menu",
+        "ru": "Использовать выпадающее меню вместо контекстного меню",
+        "es": "Usar menú desplegable en lugar del menú contextual",
+        "fr": "Utiliser un menu déroulant au lieu du menu contextuel",
+        "zh": "使用下拉菜单而不是上下文菜单"
+    },
+    useDropdownMenuDesc: {
+        "en": "Replace the context menu with a native dropdown menu. Enable this if context menus don't work on your system. Click the ↺ button to refresh vocabulary blocks after changing this setting.",
+        "ru": "Заменить контекстное меню на нативное выпадающее меню. Включите это, если контекстные меню не работают в вашей системе. Нажмите кнопку ↺ для обновления блоков словаря после изменения этой настройки.",
+        "es": "Reemplazar el menú contextual con un menú desplegable nativo. Habilite esto si los menús contextuales no funcionan en su sistema. Haga clic en el botón ↺ para actualizar los bloques de vocabulario después de cambiar esta configuración.",
+        "fr": "Remplacer le menu contextuel par un menu déroulant natif. Activez ceci si les menus contextuels ne fonctionnent pas sur votre système. Cliquez sur le bouton ↺ pour actualiser les blocs de vocabulaire après avoir modifié ce paramètre.",
+        "zh": "用原生下拉菜单替换上下文菜单。如果上下文菜单在您的系统上不起作用，请启用此选项。更改此设置后，单击↺按钮刷新词汇块。"
     }
 };

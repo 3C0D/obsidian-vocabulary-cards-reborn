@@ -81,14 +81,85 @@ export async function renderCard(plugin: VocabularyView, cardStat: CardStat, car
 
     // Add context menu button if setting is enabled
     if (plugin.settings.showContextMenuButton) {
-        const contextMenuButton = buttonContainer.createEl('button', {
-            cls: 'reload-container_context-menu-button',
-            text: '☰',
-            attr: { title: 'Show context menu' }
-        });
-        contextMenuButton.addEventListener('click', (e) => {
-            handleContextMenu(e as MouseEvent, plugin, el, ctx, source, cardStat, cardList, source);
-        });
+        if (plugin.settings.useDropdownMenu) {
+            // Create dropdown menu
+            const dropdownContainer = buttonContainer.createEl('div', {
+                cls: 'reload-container_dropdown-container'
+            });
+            const dropdownButton = dropdownContainer.createEl('button', {
+                cls: 'reload-container_dropdown-button',
+                text: '☰',
+                attr: { title: 'Show menu' }
+            });
+            const dropdownMenu = dropdownContainer.createEl('div', {
+                cls: 'reload-container_dropdown-menu'
+            });
+
+            // Add menu items
+            const cleanItem = dropdownMenu.createEl('div', {
+                cls: 'reload-container_dropdown-item',
+                text: '🗑️ ' + (plugin.settings.stats && Object.keys(plugin.settings.stats).length > 0 ? 'Clean old stats' : 'Nothing to clean')
+            });
+            cleanItem.addEventListener('click', async () => {
+                // Clean stats logic here
+                dropdownMenu.style.display = 'none';
+            });
+
+            const switchItem = dropdownMenu.createEl('div', {
+                cls: 'reload-container_dropdown-item',
+                text: '↔️ Switch to table'
+            });
+            switchItem.addEventListener('click', async () => {
+                // Switch logic here
+                dropdownMenu.style.display = 'none';
+            });
+
+            if (cardStat && cardList) {
+                const modeItem = dropdownMenu.createEl('div', {
+                    cls: 'reload-container_dropdown-item',
+                    text: '🔀 Mode: ' + (plugin.mode === "random" ? "Next" : "Random")
+                });
+                modeItem.addEventListener('click', async () => {
+                    plugin.mode = plugin.mode === "random" ? "next" : "random";
+                    await plugin.saveSettings();
+                    (el.querySelector(".mode-div") as HTMLSpanElement).textContent = plugin.mode === "random" ? "Random" : "Next";
+                    dropdownMenu.style.display = 'none';
+                });
+
+                const invertItem = dropdownMenu.createEl('div', {
+                    cls: 'reload-container_dropdown-item',
+                    text: '🔄 ' + (plugin.invert ? "Normal" : "Invert")
+                });
+                invertItem.addEventListener('click', async () => {
+                    plugin.invert = !plugin.invert;
+                    await plugin.saveSettings();
+                    (el.querySelector(".invert-div") as HTMLSpanElement).textContent = plugin.invert ? "Invert" : "Normal";
+                    await renderCard(plugin, cardStat, cardList, el, ctx, source);
+                    dropdownMenu.style.display = 'none';
+                });
+            }
+
+            // Toggle dropdown
+            dropdownButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                dropdownMenu.style.display = 'none';
+            });
+        } else {
+            // Use context menu
+            const contextMenuButton = buttonContainer.createEl('button', {
+                cls: 'reload-container_context-menu-button',
+                text: '☰',
+                attr: { title: 'Show context menu' }
+            });
+            contextMenuButton.addEventListener('click', (e) => {
+                handleContextMenu(e as MouseEvent, plugin, el, ctx, source, cardStat, cardList, source);
+            });
+        }
     }
 
     if (plugin.autoMode) {
@@ -197,14 +268,60 @@ export function reloadButton(plugin: VocabularyView, el: HTMLElement, cardList: 
 
     // Add context menu button for tables if setting is enabled
     if (plugin.settings.showContextMenuButton && type === 'table') {
-        const contextMenuButton = buttonContainer.createEl('button', {
-            cls: 'reload-container_context-menu-button',
-            text: '☰',
-            attr: { title: 'Show context menu' }
-        });
-        contextMenuButton.addEventListener('click', (e) => {
-            handleContextMenu(e as MouseEvent, plugin, el, ctx, '');
-        });
+        if (plugin.settings.useDropdownMenu) {
+            // Create dropdown menu for tables
+            const dropdownContainer = buttonContainer.createEl('div', {
+                cls: 'reload-container_dropdown-container'
+            });
+            const dropdownButton = dropdownContainer.createEl('button', {
+                cls: 'reload-container_dropdown-button',
+                text: '☰',
+                attr: { title: 'Show menu' }
+            });
+            const dropdownMenu = dropdownContainer.createEl('div', {
+                cls: 'reload-container_dropdown-menu'
+            });
+
+            // Add menu items for tables
+            const cleanItem = dropdownMenu.createEl('div', {
+                cls: 'reload-container_dropdown-item',
+                text: '🗑️ Clean old stats'
+            });
+            cleanItem.addEventListener('click', async () => {
+                // Clean stats logic here
+                dropdownMenu.style.display = 'none';
+            });
+
+            const switchItem = dropdownMenu.createEl('div', {
+                cls: 'reload-container_dropdown-item',
+                text: '↔️ Switch to cards'
+            });
+            switchItem.addEventListener('click', async () => {
+                // Switch logic here
+                dropdownMenu.style.display = 'none';
+            });
+
+            // Toggle dropdown
+            dropdownButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                dropdownMenu.style.display = 'none';
+            });
+        } else {
+            // Use context menu
+            const contextMenuButton = buttonContainer.createEl('button', {
+                cls: 'reload-container_context-menu-button',
+                text: '☰',
+                attr: { title: 'Show context menu' }
+            });
+            contextMenuButton.addEventListener('click', (e) => {
+                handleContextMenu(e as MouseEvent, plugin, el, ctx, '');
+            });
+        }
     }
 
     reload.addEventListener("click", async () => {

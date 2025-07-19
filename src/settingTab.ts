@@ -57,6 +57,21 @@ export class VocabularySettingTab extends PluginSettingTab {
                 .onChange(async (value) => {
                     this.plugin.settings.showContextMenuButton = value;
                     await this.plugin.saveSettings();
+                    // Show/hide dropdown menu setting
+                    this.display();
                 }));
+
+        // Show dropdown menu setting only when context menu button is enabled
+        if (this.plugin.settings.showContextMenuButton) {
+            new Setting(containerEl)
+                .setName(i10n.useDropdownMenu[userLang] || i10n.useDropdownMenu['en'])
+                .setDesc(i10n.useDropdownMenuDesc[userLang] || i10n.useDropdownMenuDesc['en'])
+                .addToggle(toggle => toggle
+                    .setValue(this.plugin.settings.useDropdownMenu)
+                    .onChange(async (value) => {
+                        this.plugin.settings.useDropdownMenu = value;
+                        await this.plugin.saveSettings();
+                    }));
+        }
     }
 }

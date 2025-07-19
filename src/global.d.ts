@@ -20,5 +20,6 @@ declare module "obsidian " {
         explainTime: number;
         disableConfirmationButtons: boolean;
         showContextMenuButton: boolean;
+        useDropdownMenu: boolean;
     }
 }
