@@ -1,1 +1,1 @@
-context menu button added for linux. and debbugging to understand why there is a problem
+I added a last fallback without el.getBoundingClientRect(); to try to make context menu work under linux
