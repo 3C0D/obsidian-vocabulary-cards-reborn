@@ -197,16 +197,23 @@ export function handleContextMenu(event: MouseEvent, plugin: VocabularyView, el:
     try {
         // Try to show menu at mouse event position first
         menu.showAtMouseEvent(event);
-    } catch (error) {
-        console.error("Error showing context menu at mouse event:", error);
+    } catch {
         try {
             // Fallback: show menu at a fixed position relative to the element
             const rect = el.getBoundingClientRect();
             menu.showAtPosition({ x: rect.left + 10, y: rect.top + 10 });
-        } catch (fallbackError) {
-            console.error("Error showing context menu at position:", fallbackError);
-            // Last resort: show a notice with available actions
-            new Notice("Context menu unavailable. Use the ☰ button if enabled in settings.");
+        } catch {
+            try {
+                // Linux/Flatpak fallback: try showing at document center
+                menu.showAtPosition({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2
+                });
+            } catch (finalError) {
+                console.error("All context menu methods failed:", finalError);
+                // Last resort: show a notice with available actions
+                new Notice("Context menu unavailable on this system. Try using keyboard shortcuts or settings panel.");
+            }
         }
     }
 }

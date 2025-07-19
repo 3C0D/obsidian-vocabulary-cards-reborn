@@ -1,4 +1,4 @@
-import { PluginSettingTab, App, Setting, Platform } from "obsidian";
+import { PluginSettingTab, App, Setting } from "obsidian";
 import VocabularyView from "./main.ts";
 import { i10n, userLang } from "./i10n.ts";
 
@@ -49,27 +49,14 @@ export class VocabularySettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
 
-        // Detect Linux for context menu warning
-        const isLinux = Platform.isLinux || (typeof process !== 'undefined' && process.platform === 'linux');
-        const contextMenuDesc = isLinux
-            ? i10n.contextMenuButtonDescLinux[userLang] || i10n.contextMenuButtonDescLinux['en']
-            : i10n.contextMenuButtonDesc[userLang] || i10n.contextMenuButtonDesc['en'];
-
         new Setting(containerEl)
             .setName(i10n.contextMenuButton[userLang] || i10n.contextMenuButton['en'])
-            .setDesc(contextMenuDesc)
+            .setDesc(i10n.contextMenuButtonDesc[userLang] || i10n.contextMenuButtonDesc['en'])
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.showContextMenuButton)
                 .onChange(async (value) => {
                     this.plugin.settings.showContextMenuButton = value;
                     await this.plugin.saveSettings();
                 }));
-
-        if (isLinux) {
-            containerEl.createEl('div', {
-                cls: 'setting-item-description',
-                text: i10n.contextMenuRefreshNote[userLang] || i10n.contextMenuRefreshNote['en']
-            });
-        }
     }
 }
