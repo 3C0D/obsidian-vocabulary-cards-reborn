@@ -1,1 +1,1 @@
-I added a last fallback without el.getBoundingClientRect(); to try to make context menu work under linux
+option to turn the context menu button, into a dropdown menu
